@@ -58,6 +58,7 @@ Example:
 ```text
 1,2025-09-22,Ice Cream,200.00,Expense,FOOD
 ```
+<img width="982" height="735" alt="image" src="https://github.com/user-attachments/assets/5deb0abd-923b-49a7-bf0e-c92d8ffa5840" />
 
 ## Troubleshooting
 - If using PowerShell, do not use `&&` command chaining. Use `;`.
@@ -66,11 +67,3 @@ Example:
 - Category should match enum values (for consistency):
 	`FOOD, BILLS, TRANSPORTATION, ENTERTAINMENT, SALARY, GIFTS, HEALTH, MISCELLANEOUS`
 
-## Push To New GitHub Repo
-```powershell
-Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
-git remote set-url origin https://github.com/rishu072/Expense-Tracker-Finance-Manager.git
-git add .
-git commit -m "Fix runtime CSV handling and add complete README"
-git push -u origin main
-```
