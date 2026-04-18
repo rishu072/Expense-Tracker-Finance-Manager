@@ -30,35 +30,6 @@ ExpenseTracker/
 3. `TransactionDAO` reads/writes CSV data.
 4. Transactions are saved to `src/resources/data/transactions.csv`.
 
-## Simple One-Command Run
-
-### PowerShell
-```powershell
-Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
-.\run.ps1
-```
-
-### Command Prompt (CMD)
-```cmd
-cd /d C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker
-run.bat
-```
-
-## Run Locally
-
-### PowerShell (recommended on Windows)
-```powershell
-Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
-javac -d bin src\com\mycompany\expensetracker\*.java src\com\mycompany\expensetracker\dao\*.java src\com\mycompany\expensetracker\model\*.java src\com\mycompany\expensetracker\service\*.java src\com\mycompany\expensetracker\util\*.java
-java -cp bin com.mycompany.expensetracker.Main
-```
-
-### Command Prompt (CMD)
-```cmd
-cd /d C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker
-javac -d bin src\com\mycompany\expensetracker\*.java src\com\mycompany\expensetracker\dao\*.java src\com\mycompany\expensetracker\model\*.java src\com\mycompany\expensetracker\service\*.java src\com\mycompany\expensetracker\util\*.java
-java -cp bin com.mycompany.expensetracker.Main
-```
 
 ## CSV Format
 File: `src/resources/data/transactions.csv`
