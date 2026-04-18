@@ -28,7 +28,21 @@ ExpenseTracker/
 1. `Main` starts the console menu.
 2. Data operations go through `ExpenseService`.
 3. `TransactionDAO` reads/writes CSV data.
-4. After console exit, Swing GUI opens.
+4. Transactions are saved to `src/resources/data/transactions.csv`.
+
+## Simple One-Command Run
+
+### PowerShell
+```powershell
+Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
+.\run.ps1
+```
+
+### Command Prompt (CMD)
+```cmd
+cd /d C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker
+run.bat
+```
 
 ## Run Locally
 
@@ -62,6 +76,8 @@ Example:
 
 ## Troubleshooting
 - If using PowerShell, do not use `&&` command chaining. Use `;`.
+- If PowerShell blocks script execution, run this once in the same terminal:
+  `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 - Date input must be `YYYY-MM-DD`.
 - Type should be `Expense` or `Income`.
 - Category should match enum values (for consistency):

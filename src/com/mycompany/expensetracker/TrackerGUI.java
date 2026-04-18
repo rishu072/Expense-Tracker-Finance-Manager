@@ -1,5 +1,6 @@
 package com.mycompany.expensetracker;
 
+import com.mycompany.expensetracker.model.Category;
 import com.mycompany.expensetracker.model.Transaction;
 import com.mycompany.expensetracker.service.ExpenseService;
 import javax.swing.*;
@@ -7,13 +8,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class TrackerGUI extends JFrame {
 
     private ExpenseService expenseService;
     private JTextArea displayArea;
-    private JTextField dateField, descriptionField, amountField, typeField, categoryField;
+    private JTextField dateField, descriptionField, amountField;
+    private JComboBox<String> typeComboBox;
+    private JComboBox<Category> categoryComboBox;
 
     public TrackerGUI() {
         this.expenseService = new ExpenseService();
@@ -21,7 +25,7 @@ public class TrackerGUI extends JFrame {
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        
+
         createUI();
         refreshDisplay();
     }
@@ -40,16 +44,16 @@ public class TrackerGUI extends JFrame {
         amountField = new JTextField();
         inputPanel.add(amountField);
         inputPanel.add(new JLabel("Type (Expense/Income):"));
-        typeField = new JTextField();
-        inputPanel.add(typeField);
+        typeComboBox = new JComboBox<>(new String[] { "Expense", "Income" });
+        inputPanel.add(typeComboBox);
         inputPanel.add(new JLabel("Category:"));
-        categoryField = new JTextField();
-        inputPanel.add(categoryField);
-        
+        categoryComboBox = new JComboBox<>(Category.values());
+        inputPanel.add(categoryComboBox);
+
         JButton addButton = new JButton("Add Transaction");
         inputPanel.add(new JLabel()); // Spacer
         inputPanel.add(addButton);
-        
+
         // Action listener for the button
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -68,28 +72,64 @@ public class TrackerGUI extends JFrame {
         add(inputPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
     }
-    
+
     private void addTransaction() {
         try {
-            LocalDate date = LocalDate.parse(dateField.getText());
-            String description = descriptionField.getText();
-            double amount = Double.parseDouble(amountField.getText());
-            String type = typeField.getText();
-            String category = categoryField.getText();
+            LocalDate date;
+            try {
+                date = LocalDate.parse(dateField.getText().trim());
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(this, "Date must be in YYYY-MM-DD format.", "Invalid Date",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            expenseService.addTransaction(date, description, amount, type, category);
-            
+            String description = descriptionField.getText().trim();
+            if (description.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Description cannot be empty.", "Invalid Description",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double amount;
+            try {
+                amount = Double.parseDouble(amountField.getText().trim());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Amount must be a valid number.", "Invalid Amount",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (amount <= 0) {
+                JOptionPane.showMessageDialog(this, "Amount must be greater than 0.", "Invalid Amount",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String type = (String) typeComboBox.getSelectedItem();
+            Category category = (Category) categoryComboBox.getSelectedItem();
+
+            if (type == null || category == null) {
+                JOptionPane.showMessageDialog(this, "Please select both type and category.", "Invalid Selection",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            expenseService.addTransaction(date, description, amount, type, category.name());
+
             // Clear fields after adding
             dateField.setText(LocalDate.now().toString());
             descriptionField.setText("");
             amountField.setText("");
-            typeField.setText("");
-            categoryField.setText("");
-            
+            typeComboBox.setSelectedIndex(0);
+            categoryComboBox.setSelectedIndex(0);
+
             refreshDisplay();
-            JOptionPane.showMessageDialog(this, "Transaction added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Transaction added successfully!", "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error adding transaction: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error adding transaction: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 

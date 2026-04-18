@@ -46,24 +46,29 @@ public class TransactionDAO {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()))) {
             String line;
+            int lineNumber = 0;
             while ((line = br.readLine()) != null) {
+                lineNumber++;
                 String[] data = line.split(",");
                 if (data.length < 6) {
+                    System.err.println("Skipping invalid transaction row " + lineNumber + ": " + line);
                     continue;
                 }
 
-                int id = Integer.parseInt(data[0]);
-                LocalDate date = LocalDate.parse(data[1]);
-                String description = data[2];
-                double amount = Double.parseDouble(data[3]);
-                String type = data[4];
-                String category = data[5];
-                transactions.add(new Transaction(id, date, description, amount, type, category));
+                try {
+                    int id = Integer.parseInt(data[0]);
+                    LocalDate date = LocalDate.parse(data[1]);
+                    String description = data[2];
+                    double amount = Double.parseDouble(data[3]);
+                    String type = data[4];
+                    String category = data[5];
+                    transactions.add(new Transaction(id, date, description, amount, type, category));
+                } catch (RuntimeException e) {
+                    System.err.println("Skipping malformed transaction row " + lineNumber + ": " + line);
+                }
             }
         } catch (IOException e) {
             System.err.println("Error reading transactions file: " + e.getMessage());
-        } catch (RuntimeException e) {
-            System.err.println("Error parsing transactions file: " + e.getMessage());
         }
         return transactions;
     }
