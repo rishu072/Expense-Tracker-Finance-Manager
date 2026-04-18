@@ -2,20 +2,56 @@ package com.mycompany.expensetracker.dao;
 
 import com.mycompany.expensetracker.model.Transaction;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionDAO {
 
-    private static final String FILE_PATH = "src/resources/data/transactions.csv";
+    private static final String SOURCE_FILE_PATH = "src/resources/data/transactions.csv";
+    private static final String BIN_FILE_PATH = "bin/resources/data/transactions.csv";
+
+    private Path resolveFilePath() {
+        Path srcPath = Paths.get(SOURCE_FILE_PATH);
+        if (Files.exists(srcPath)) {
+            return srcPath;
+        }
+
+        Path binPath = Paths.get(BIN_FILE_PATH);
+        if (Files.exists(binPath)) {
+            return binPath;
+        }
+
+        try {
+            Path parent = srcPath.getParent();
+            if (parent != null && !Files.exists(parent)) {
+                Files.createDirectories(parent);
+            }
+            if (!Files.exists(srcPath)) {
+                Files.createFile(srcPath);
+            }
+        } catch (IOException e) {
+            System.err.println("Could not create transactions file: " + e.getMessage());
+        }
+
+        return srcPath;
+    }
 
     public List<Transaction> getAllTransactions() {
         List<Transaction> transactions = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+        Path filePath = resolveFilePath();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
+                if (data.length < 6) {
+                    continue;
+                }
+
                 int id = Integer.parseInt(data[0]);
                 LocalDate date = LocalDate.parse(data[1]);
                 String description = data[2];
@@ -26,12 +62,16 @@ public class TransactionDAO {
             }
         } catch (IOException e) {
             System.err.println("Error reading transactions file: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Error parsing transactions file: " + e.getMessage());
         }
         return transactions;
     }
 
     public void saveTransaction(Transaction transaction) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
+        Path filePath = resolveFilePath();
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath.toFile(), true))) {
             bw.write(String.format("%d,%s,%s,%.2f,%s,%s%n",
                     transaction.getId(),
                     transaction.getDate(),
@@ -43,7 +83,7 @@ public class TransactionDAO {
             System.err.println("Error saving transaction: " + e.getMessage());
         }
     }
-    
+
     public int getNextId() {
         List<Transaction> transactions = getAllTransactions();
         if (transactions.isEmpty()) {

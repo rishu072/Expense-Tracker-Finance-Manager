@@ -1,18 +1,76 @@
-## Getting Started
+# Expense Tracker Finance Manager
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Simple Java Personal Finance Tracker with:
+- Console menu (add transaction, view all, view summary)
+- Swing GUI for adding and viewing transactions
+- CSV-based local persistence
 
-## Folder Structure
+## Tech Stack
+- Java (JDK 8+)
+- Standard Java libraries only (no external dependencies)
 
-The workspace contains two folders by default, where:
+## Project Structure
+```
+ExpenseTracker/
+	src/
+		com/mycompany/expensetracker/
+			Main.java
+			TrackerGUI.java
+			dao/TransactionDAO.java
+			model/Transaction.java
+			model/Category.java
+			service/ExpenseService.java
+		resources/data/transactions.csv
+	bin/
+```
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## How It Works
+1. `Main` starts the console menu.
+2. Data operations go through `ExpenseService`.
+3. `TransactionDAO` reads/writes CSV data.
+4. After console exit, Swing GUI opens.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## Run Locally
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### PowerShell (recommended on Windows)
+```powershell
+Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
+javac -d bin src\com\mycompany\expensetracker\*.java src\com\mycompany\expensetracker\dao\*.java src\com\mycompany\expensetracker\model\*.java src\com\mycompany\expensetracker\service\*.java src\com\mycompany\expensetracker\util\*.java
+java -cp bin com.mycompany.expensetracker.Main
+```
 
-## Dependency Management
+### Command Prompt (CMD)
+```cmd
+cd /d C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker
+javac -d bin src\com\mycompany\expensetracker\*.java src\com\mycompany\expensetracker\dao\*.java src\com\mycompany\expensetracker\model\*.java src\com\mycompany\expensetracker\service\*.java src\com\mycompany\expensetracker\util\*.java
+java -cp bin com.mycompany.expensetracker.Main
+```
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## CSV Format
+File: `src/resources/data/transactions.csv`
+
+Each row:
+```text
+id,date,description,amount,type,category
+```
+
+Example:
+```text
+1,2025-09-22,Ice Cream,200.00,Expense,FOOD
+```
+
+## Troubleshooting
+- If using PowerShell, do not use `&&` command chaining. Use `;`.
+- Date input must be `YYYY-MM-DD`.
+- Type should be `Expense` or `Income`.
+- Category should match enum values (for consistency):
+	`FOOD, BILLS, TRANSPORTATION, ENTERTAINMENT, SALARY, GIFTS, HEALTH, MISCELLANEOUS`
+
+## Push To New GitHub Repo
+```powershell
+Set-Location "C:\Users\Rishu\Desktop\Project\Expense-Tracker\ExpenseTracker"
+git remote set-url origin https://github.com/rishu072/Expense-Tracker-Finance-Manager.git
+git add .
+git commit -m "Fix runtime CSV handling and add complete README"
+git push -u origin main
+```
