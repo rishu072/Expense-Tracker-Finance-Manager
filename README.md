@@ -81,22 +81,6 @@ graph TD
 
 ---
 
-## Running the Application
-
-### Compile
-```powershell
-javac -d bin src/com/mycompany/expensetracker/model/*.java src/com/mycompany/expensetracker/dao/*.java src/com/mycompany/expensetracker/service/*.java src/com/mycompany/expensetracker/util/*.java src/com/mycompany/expensetracker/*.java
-```
-
-### Run CLI Menu
-```powershell
-java -cp bin com.mycompany.expensetracker.Main
-```
-
-*Note: The Swing GUI is built in `TrackerGUI.java` but is currently disconnected from `Main.java`. To run the GUI directly, a `main` method can be added to launch it.*
-
----
-
 ## Troubleshooting
 - If using PowerShell, do not use `&&` command chaining. Use `;`.
 - If PowerShell blocks script execution, run this once in the same terminal:
